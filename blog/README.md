@@ -133,3 +133,91 @@ title.map((value, idx) => {return (
 ```
 
 - 반복문으로 html을 생성하면 key={html별로 고유한 값}를 추가해야 한다.
+
+<br/>
+
+## `<input>` 태그 알아보기
+- `type`
+	- `text`
+	- `date`
+	- `range` 등...
+- `select` 등...
+- `onChange`, `onInput` 이벤트 핸들러
+
+#### 이벤트 객체
+```js
+onChange={(e) => {console.log(e.target)}}
+```
+- 이벤트가 발생하면, `이벤트 객체`는 동적으로 생성되어, 이벤트 핸들러에 인자로 암묵적으로 전달된다.
+- DOM과 관련된 이벤트가 발생하면 관련 정보는 모두 이 `이벤트 객체`에 저장된다.
+	- 이벤트 발생 요소, 이벤트 타입, 이벤트 관련 데이터도 저장된다.
+- `e.target` : 이벤트가 발생한 html 태그
+	- `e.target.value` : 이벤트가 발생한 html 태그에 입력한 값
+
+#### 이벤트 버블링
+- 특정 이벤트는 상위 html로 퍼진다.
+- `e.stopPropagation();` 으로 해결
+
+<br/>
+
+## `class` 를 사용한 컴포넌트
+
+```js
+class Profile extends React.Component {
+	constructor() {
+		super();
+	}
+	render() {
+		return (
+			<div>프로필입니다.</div>
+		);
+	}
+}
+```
+- `state` 는 `constructor` 안에 작성한다.
+	- `constructor` : `class` 의 변수/초기값을 저장할 때 사용
+	- `this.state` 라는 변수에 전부 보관
+- 꺼내쓸 때는 `this.state.state명`
+- state를 변경할 땐 `this.setState()` 내장함수로만 가능
+	- 신문법으로 만든 state 변경함수들은 아예 state를 바꿔치기해주는 역할
+	- `setState()`는 객체 형태이기 때문에 필요한 부분만 수정하고 나머지는 건드리지 X
+	- 1.state 복사본 만들고 2.수정하고 3.복사본을 집어넣는 절차가 필요없다.
+
+#### 커스텀 함수와 `this`
+- `constructor(){}` 와 `render(){}` 사이에 만든다.
+- 필요한 자리에 `this.함수명` 형태로 사용한다.
+	- **이 때 `bind` 없이는 에러가 발생할 수 있다.**
+	- 자바스크립트에서 `function`을 쓴다면, **안에있는 `this`값은 항상 새롭게 재정의**된다.
+	- 따라서 함수 안에 있던 `this`도 호출 시 **해당 위치에서 재정의**가 되어서 의도(context)와 다른 기능을 하게 된다.
+	- `this`가 재정의되지 않으려면
+		1. 함수를 쓸 때 `this.함수명.bind(this)` 사용하거나
+		2. 함수를 `arrow function` 으로 선언
+
+<br/>
+
+## 간단하게 배포하기 (feat. Github Pages)
+- state, JSX, 컴포넌트, props 같은 문법들은 브라우저가 해석할 수 없으니 그대로 배포할 수 없다.
+- 이런 문법들을 전통적인 CSS, JS, HTML 문법으로 바꿔주는 작업이 필요하다.
+	- 이것을 컴파일 또는 build라고 한다.
+- 이 과정은 컴파일(트랜스파일)러와 번들러에 의해 수행된다.
+```bash
+# cra로 만든 프로젝트일 경우
+npm run build
+
+
+# The project was built assuming it is hosted at /.
+# You can control this with the homepage field in your package.json.
+# The build folder is ready to be deployed.
+# You may serve it with a static server
+```
+- `babel`
+	- JSX와 ES6+ 를 트랜스파일
+- `Webpack` [(참고)](https://tecoble.techcourse.co.kr/post/2021-07-10-webpack-exercise/)
+	- `엔트리 (Entry)` : 번들링을 시작하기 위한 최초 진입점 ( ex. `./src/index.js` ). 웹팩은 이 진입점으로부터 의존적인 모듈을 전부 찾아낸다. 
+	- `아웃풋 (Output)` : 엔트리를 시작으로 의존되어 있는 모든 모듈을 하나로 묶어 하나의 결과물로 만들었다. 이 결과물이 위치하는 경로를 아웃풋이라고 한다.
+	- `로더 (Loader)` : 웹팩은 모든 파일을 모듈로 본다. 하지만 웹팩은 자바스크립트 밖에 읽지 못한다. 그래서 HTML, CSS, Images, 폰트 등을 웹팩이 읽을 수 있게 변환해줘야 하는데, 이 역할을 하는 게 바로 로더이다.
+	- `플러그인 (Plugin)` : 공식 문서에서는 로더가 할 수 없는 다른 작업을 수행한다고 설명하고 있다. 로더가 파일(모듈)을 해석하고 변환하는 과정에 필요한다면, 플러그인은 결과물(번들)에 추가적인 처리를 하고싶을 때 필요하다.
+- 위 과정을 거치면 작업 프로젝트 폴더 내에 build 라는 폴더가 하나 생성된다. build 폴더 안에 안에 있는 내용을 모두 서버에 올리면 배포된다. 
+	- index.html이 메인페이지다.
+
+끝 
