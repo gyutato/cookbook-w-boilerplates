@@ -1,8 +1,12 @@
 import './App.css';
-import product1 from './img/product1.jpg';
+import { useState } from 'react';
+import data from './data.js'
 import { Container, Nav, Navbar, Row, Col } from 'react-bootstrap'
 
 function App() {
+
+  let [details] = useState(data)
+
   return (
     <div className="App">
       <Navbar bg="light" variant="light">
@@ -20,18 +24,18 @@ function App() {
         <Row>
           <Col sm>
             <div className="product first"></div>
-            <h4>상품명</h4>
-            <p>상품설명</p>
+            <h4>{details[0].title}</h4>
+            <p>{details[0].content}</p>
           </Col>
           <Col sm>
             <div className="product second"></div>
-            <h4>상품명</h4>
-            <p>상품설명</p>
+            <h4>{details[1].title}</h4>
+            <p>{details[1].content}</p>
           </Col>
           <Col sm>
             <div className="product third"></div>
-            <h4>상품명</h4>
-            <p>상품설명</p>
+            <h4>{details[2].title}</h4>
+            <p>{details[2].content}</p>
           </Col>
         </Row>
       </Container>

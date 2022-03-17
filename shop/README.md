@@ -97,3 +97,35 @@ export default function App() {
 ```
 - **단, 홈페이지(ex. `gyutato.github.io/` )가 아니라 하위 페이지 (ex. `gyutato.github.io/shop` ) 에 발행할 경우 문제가 생길 수 있다.**
 	- 따라서 CRA 공식 문서에서는, `<img src={process.env.PUBLIC_URL + '/path/example.png'} />` 을 권장한다.
+
+## 상품 정보 DOM에 뿌리기
+- 서버에서 받아온 데이터를 변수에 저장해서 사용한다.
+- 자주 변경될 수 있으므로 state에 저장한다.
+- 단, 데이터(주로 JSON 형식)를 App.js등 파일에 그대로 불러오면, 코드가 불필요하게 길어질 수 있다.
+```json
+[
+  {
+    id : 0,
+    title : "Post-it Brainstorming 101",
+    content : "✨ effectively organize your thoughts ✨",
+    price : 4900
+  },
+
+  {
+    id : 1,
+    title : "Tips for Apple Notes App",
+    content : "🍎 the simplest and strongest memo tool 🍎",
+    price : 5900
+  },
+
+  {
+    id : 2,
+    title : "How I Take Notes",
+    content : "📝 tips for efficient and neat note taking 📝",
+    price : 3900
+  }
+] 
+```
+- 세 개의 상품 정보만 불러와도 이만큼의 길이를 차지한다.
+- **그래서 다른 js 파일에 취합해둔 후 필요한 부분만 `import` 해서 사용하는 것이다.**
+- 컴포넌트의 규모가 크다면 다른 파일에 작성 후 `import` 해서 가독성을 높일 수 있다.
