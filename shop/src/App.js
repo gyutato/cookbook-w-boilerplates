@@ -5,7 +5,7 @@ import { Container, Nav, Navbar, Row, Col } from 'react-bootstrap'
 
 function App() {
 
-  let [details] = useState(data)
+  let [infos] = useState(data)
 
   return (
     <div className="App">
@@ -22,24 +22,28 @@ function App() {
       <div className="main-bg"></div>
       <Container>
         <Row>
-          <Col sm>
-            <div className="product first"></div>
-            <h4>{details[0].title}</h4>
-            <p>{details[0].content}</p>
-          </Col>
-          <Col sm>
-            <div className="product second"></div>
-            <h4>{details[1].title}</h4>
-            <p>{details[1].content}</p>
-          </Col>
-          <Col sm>
-            <div className="product third"></div>
-            <h4>{details[2].title}</h4>
-            <p>{details[2].content}</p>
-          </Col>
+          {
+            infos.map((info, idx) => {return(
+                <Product info={info} idx={idx} />
+              );
+            })
+          }
         </Row>
       </Container>
     </div>
+  );
+}
+
+function Product(props) {
+  return (
+    <Col sm>
+      <img 
+        src={process.env.PUBLIC_URL + '/img/product' + props.idx + '.jpg'}
+        className={'productCard ' + props.idx}
+      />
+      <h4>{props.info.title}</h4>
+      <p>{props.info.content}</p>
+    </Col>
   );
 }
 
