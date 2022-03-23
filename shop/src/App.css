@@ -8,12 +8,16 @@
   background-size: cover;
 }
 
-.productCard{
+.productCard {
   margin-top: 20px;
   margin-bottom: 10px;
   height: 240px;
-  width: 400px;
+  width: 100%;
   object-fit: cover;
+}
+
+Button {
+  margin: 20px;
 }
 
 /* default */
