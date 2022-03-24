@@ -1,14 +1,14 @@
 import './App.css';
 import { useState } from 'react';
 import data from './data.js'
-import { Container, Nav, Navbar, Row, Col, Button } from 'react-bootstrap'
-import { Router, Routes, Route, useNavigate, Outlet } from 'react-router-dom';
+import { Container, Nav, Navbar, Row, Col} from 'react-bootstrap'
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Detail from './pages/Detail.js'
 import Event from './pages/Event.js'
 
 function App() {
 
-  let [infos] = useState(data)
+  let [products] = useState(data)
   let navigate = useNavigate();
 
   return (
@@ -16,7 +16,7 @@ function App() {
 
       <Navbar bg="light" variant="light">
         <Container>
-          <Navbar.Brand href="#home">GYUSINSA</Navbar.Brand>
+          <Navbar.Brand onClick={() => { navigate('/') }}>GYUSINSA</Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link onClick={() => { navigate('/') }}>Home</Nav.Link>
             <Nav.Link onClick={() => { navigate('/details') }}>Details</Nav.Link>
@@ -28,12 +28,15 @@ function App() {
       <Routes>
         <Route path="/" element={
           <div>
-            <div className="main-bg"></div>
+            <img 
+              className="main-bg" 
+              src={process.env.PUBLIC_URL + '/img/mainbg.jpg'}
+            />
             <Container>
               <Row>
                 {
-                  infos.map((info, idx) => {return(
-                      <Product info={info} idx={idx} />
+                  products.map((product, idx) => {return(
+                      <Product product={product} idx={idx} />
                     );
                   })
                 }
@@ -41,29 +44,26 @@ function App() {
             </Container>
           </div>
         } />
-        <Route path="/details" element={ <Detail /> } />
+        <Route path="/details/:id" element={ <Detail products={products} /> } />
         <Route path='/events/*' element={ <Event /> } >
-          <Route path="one" element={<p>첫 주문시 양배추즙 서비스</p>}/>
-          <Route path="two" element={<p>생일기념 쿠폰 받기</p>}/>
         </Route>
-        {/* <Route path='/events' element={<EventList />}>
-          <Route path="one" element={<p>첫 주문시 양배추즙 서비스</p>}/>
-          <Route path="two" element={<p>생일기념 쿠폰 받기</p>}/>
-        </Route> */}
       </Routes>
     </div>
   );
 }
 
 function Product(props) {
+  let navigate = useNavigate();
+
   return (
     <Col sm>
       <img 
         src={process.env.PUBLIC_URL + '/img/product' + props.idx + '.jpg'}
         className={'productCard ' + props.idx}
+        onClick={() => { navigate('/details/' + props.idx) }}
       />
-      <h4>{props.info.title}</h4>
-      <p>{props.info.content}</p>
+      <h5>{props.product.title}</h5>
+      <p>{props.product.content}</p>
     </Col>
   );
 }

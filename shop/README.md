@@ -1,6 +1,6 @@
 # 쇼핑몰 구현 프로젝트
 - tech stack: JavaScript, React.js
-- react-router-dom
+- react-router-dom v6
 - React-Bootstrap
 
 ## React-Bootstrap 라이브러리
@@ -348,3 +348,137 @@ const Module = () => {
 export default Module;
 ```
 - 부모 루트에서 `Outlet` 없이 곧바로 `Routes` , `Route` 로 기재할 수 있다.
+
+<br/>
+
+## URL 파라미터
+#### URL 파라미터와 쿼리
+- 파라미터 : `/details/0`
+	- 일반적으로 파라미터는 특정 id나 이름을 가지고 조회할 때 사용
+
+- 쿼리 : `/details?color=red`
+	- 쿼리의 경우엔 어떤 키워드를 검색하거나, 요청을 할 때 필요한 옵션을 전달할 때 사용
+
+#### `useParams` 로 URL 파라미터 받기
+```jsx
+// App.js
+
+<Route path="/details/:id" element={ <Detail products={products} /> } />
+```
+```jsx
+// Detail.js
+
+let {id} = useParams();
+```
+- 파라미터의 위치는 `Route` 태그의 `path` 속성 안에 `경로명/:파라미터변수명` 으로 밝혀 준다.
+	- path 작명 시 `:` 는 '아무 문자' 를 뜻한다.
+	- 따라서 위의 `Route` 는 누군가 주소창에 `/details/아무거나` 입력했을 때 `Detail` 컴포넌트를 보여주라는 뜻이다.
+- 파라미터를 사용할 **컴포넌트** 내부에서 변수에 `useParams` 를 저장한다.
+	- **이 때 `useParams()` 로 전달된 파라미터는 String 자료형이다.** 추후 정수 값 등과 비교하기 위해서는 형 변환을 하든가, 일치 연산자 (`===`) 대신 동등 연산자(`==`)를 사용한다.
+
+<br/>
+
+## `styled-components`
+```bash
+npm install styled-components
+```
+```jsx
+import styled from 'styled-components'
+
+let btn = styled.button`
+	background-color : ${props => props.bg};
+	color: ${props.bg == black? white : black};
+	padding : 10px;
+`
+```
+- 컴포넌트가 늘어날수록, 스타일링을 하다 보면 불편함이 생긴다:
+	- class 만들어둔 걸 까먹고 중복해서 또 만들거나
+	- 갑자기 다른 컴포넌트에 의도하지 않은 스타일이 적용되거나
+	- CSS 파일이 너무 길어져서 수정이 어렵거나...
+- `styled-components` 라이브러리를 사용하면, 스타일을 바로 입혀서 컴포넌트를 만들 수 있다.
+- 위 예시 코드처럼, `styled.만들려는태그명` 으로 요소를 선언하고 바로 뒤에 백틱 기호를 사용해서 CSS 스타일을 넣는다. 이렇게 남겨진 컴포넌트를 변수에 저장해서 사용한다.
+	- 백틱 기호를 쓰는 데서 알 수 있듯, 자바스크립트의 **템플릿 리터럴** 처럼 내부적으로 `${ }` 안에 변수나 표현식을 사용할 수 있다. 
+	- 그래서 `props` 를 받도록 만들면 한 요소를 가변적으로 재사용할 수 있다.
+
+#### 장점
+- CSS 파일을 오픈할 필요 없이 JS 파일 내부에서 바로 스타일을 넣을 수 있다.
+- 한 파일에 적용한 스타일이 다른 JS 파일로 오염되지 않는다. 일반 CSS 파일은 바벨이 트랜스파일하는 과정에서 하나로 합쳐지며 오염을 야기할 수 있다.
+- **페이지 로딩 시간이 단축된다.**
+
+#### 일반 CSS 파일로 오염 방지하는 법
+- 사실 `styled-components` 의 장점 중 '파일 간 오염을 막는다'는 것은 일반 CSS 파일에서도 `module` 네이밍을 붙여줌으로써 가능하다.
+- `App.js` 파일에서 사용하는 `App.css` 파일이 있다고 하자.
+	- 이 `App.css` 파일에 명시된 클래스 명이 `Detail.js` 에도 존재하고 있다면, 해당 스타일이 `Detail.js` 내부의 컴포넌트들에도 적용된다.
+	- `App.js` 내부에 `Detail.js` 가 임포트되어 있는 것이기 때문에, 바벨이 트랜스파일하며 하나의 파일로 합치는 과정에서 스타일이 같이 적용된다.
+- 이 때 `App.css` 의 파일명을 `App.module.css` 로, 즉 사이에 `module` 을 넣어 변경하면 
+
+#### 단점
+- CSS 길이 줄이려다 되려 JS 파일 길이를 복잡하게 늘리는 결과를 낳을 수 있다.
+- JS 파일 간 **중복 디자인**이 많이 필요한 경우, 다른 파일에서 `import` 해와서 사용해야 한다. 
+	- 이 때는 오히려 한 CSS 파일에 스타일을 두고 파일들이 공유할 수 있도록 하는 방식이 나을 것이다.
+- CSS를 담당하는 **디자이너**와 협업하는 경우에는, 디자이너의 `styled-components` 에 대한 이해도에 따라 다시 CSS로 변환하거나 반대로 CSS 코드를 JS의 styled 문법으로 옮겨오는 등의 번거로움이 발생한다.
+- **새로운 기술(라이브러리)를 도입할 땐, 나 혼자 간편하겠다고 쓰는 게 아니라 확장성 및 팀원들의 이해도를 고려하여 결정해야 한다**
+
+<br/>
+
+## 컴포넌트의 Lifecycle과 hook, `useEffect`
+- **컴포넌트 Lifecycle** 쉽게 생각하기!
+	- `mount` : 컴포넌트가 화면에 로드됨(보임) = 페이지에 장착됨
+	- `update` : 컴포넌트가 변화(업데이트)됨 (state 조작 등)
+	- `unmount` : 컴포넌트가 필요없으면 제거됨 (state 조작, 페이지 이동 등)
+- lifecycle, 왜 알아야 하는가?? 👉 특정 시점에 프로그래머가 임의로 **간섭**할 수 있다!
+
+#### 클래스형 컴포넌트 방식
+```jsx
+class foo extends React.Component {
+	componentDidMount() {}
+	componentDidUpdate() {}
+	componentWillUnmount() {}
+}
+```
+
+#### 함수형 컴포넌트 방식
+```jsx
+import useEffect from 'react'
+
+useEffect (() => { }) // mount, update 시 콜백함수 실행
+```
+- **그런데 사실, 어떤 코드를 `useEffect` 안에 쓰든, 밖에 쓰든 사실 `console.log()` 정도만 찍어 보면 차이를 알 수 없다.**
+	- 어디에 적든 동일하게 컴포넌트의 mount나 update 시점에 실행되는 것을 확인할 수 있다.
+
+#### `useEffect` 왜 쓰나요?
+- **`useEffect` 안에 있는 코드는 html 렌더링 후에 동작한다.**
+	- 즉, html요소들을 화면에 다 띄워주고 나서 `useEffect` 내부의 코드를 실행한다.
+```jsx
+import useEffect from 'react'
+
+function foo() {
+	useEffect (() => { 
+		for (var i = 0; i < 10000; i++)
+			console.log(1);
+	})
+
+	return (
+		<div>html 요소</div>
+	)
+}
+```
+- 위와 같은 코드에서, 10000번 돌아가는 for 반복문은 약 1~2초의 딜레이를 발생시킬 수 있다.
+- 만약 `useEffect` 안에 적지 않았다면, 자바스크립트 엔진은 코드를 위에서부터 순차적으로 실행시키므로 for문이 끝날때까지의 1~2초동안 사용자는 화면상에서 어떤 html요소도 볼 수 없다.
+	- 일단 화면상에 뭐라도 보이는 것과 빈 화면이 띄워져 있는 것은 사용자의 성능 체감을 크게 좌우한다.
+- **그래서 `useEffect` 안에 적는 코드들은:
+	- **어려운 연산**
+	- **서버에서 데이터 가져오는 작업**
+	- **타이머 설정** 등...
+
+#### 타이머? `setTimeOut`
+```js
+setTimeout(function[, delay, arg1, arg2, ...]);
+```
+- `function` : 타이머가 만료된 뒤 실행할 함수
+- `delay` : 주어진 함수 또는 코드를 실행하기 전에 기다릴 **밀리초 단위** 시간
+
+#### 여담: `useEffect`의 어원
+- `Side Effect` (부작용 아님) : "함수의 핵심기능과 상관없는 부가기능"
+	- 프론트에서 함수의 핵심기능이란? **html 렌더링**
+	- `useEffect` = Side Effect 코드들 보관함
