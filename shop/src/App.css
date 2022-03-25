@@ -5,7 +5,7 @@
   src: url('../public/img/mainbg.jpg');
 }
 
-h6 .red {
+h6.red {
   color: red;
 }
 
