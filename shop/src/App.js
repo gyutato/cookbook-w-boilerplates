@@ -44,34 +44,34 @@ function App() {
                 }
               </Row>
             </Container>
+            <Button variant='secondary' 
+              style={{margin: '5px 20px 20px 20px'}}
+              onClick={() => {
+                if (server == 4) {
+                  alert('상품이 더 이상 존재하지 않습니다.')
+                }
+                else {
+                  // 로딩중 UI 띄우기
+                  axios.get('https://codingapple1.github.io/shop/data'+server+'.json')
+                  .then((data) => {
+                    // 로딩중 UI 숨기기
+                    let newCopy = products.concat(data.data)
+                    setProducts(newCopy)
+                  })
+                  .catch(() => {
+                    // 로딩중 UI 숨기기
+                  })
+                  setServer(server + 1)
+                }
+              }}>
+              누르면 신발 나옴
+            </Button>
           </div>
         } />
         <Route path="/details/:id" element={ <Detail products={products} /> } />
         <Route path='/events/*' element={ <Event /> } >
         </Route>
       </Routes>
-      <Button variant='secondary' 
-        style={{margin: '5px 20px 20px 20px'}}
-        onClick={() => {
-          if (server == 4) {
-            alert('상품이 더 이상 존재하지 않습니다.')
-          }
-          else {
-            // 로딩중 UI 띄우기
-            axios.get('https://codingapple1.github.io/shop/data'+server+'.json')
-            .then((data) => {
-              // 로딩중 UI 숨기기
-              let newCopy = products.concat(data.data)
-              setProducts(newCopy)
-            })
-            .catch(() => {
-              // 로딩중 UI 숨기기
-            })
-            setServer(server + 1)
-          }
-        }}>
-        누르면 신발 나옴
-      </Button>
     </div>
   );
 }

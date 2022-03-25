@@ -560,3 +560,112 @@ Promise.all( [axios.get('URL1'), axios.get('URL2')] )
 ```
 - `Promise` 문법을 사용한다.
 - 물론 URL1과 URL2에 대한 axios 요청 코드를 각각 따로 작성해도 상관 없지만, **두 요청 모두** 성공해야만 실행될 코드가 있다면 `Promise` 로 묶을 수 있다.
+
+<br/>
+
+## 틈새 CSS : 투명도 변화 애니메이션 구현하기
+#### 전환 애니메이션 만들기
+1. 애니메이션 동작 전 className 만들기
+2. 애니메이션 동작 후 className 만들기
+3. className에 transition 속성 추가
+4. (1번 className을 달고 있는 상태에서) 원할 때 2번 className 부착
+
+#### 해 보기 : 버튼 클릭 시 내용이 fade-in 되며 노출
+```css
+/* App.css */
+.start {
+  opacity: 0;
+}
+
+.end {
+  opacity: 1;
+  transition: opacity 0.5s
+}
+```
+#### '원할 때'에 2번 className을 어떻게 붙일 건데?
+- **state로 만들어서 `className={}` 안에 넣어 준다**
+
+```jsx
+function TabContent(props) {
+
+	let [end, setEnd] = useState('');
+
+	useEffect(() => {
+		setTimeout(() => {setFade('end')}, 100)
+		return (() => {
+			setFade=('')
+		})
+	}, [props.tabNum])
+
+	return (
+		<div className={'start ' + end}>
+		...
+		</div>
+	)
+}
+```
+
+<br/>
+
+## props 대신 상태공유 (1) Context API
+#### SPA 어플리케이션의 단점?
+- **컴포넌트 간 state 공유가 어렵다**
+	- 부모자식 간 `props` 가 아니라면, 한 컴포넌트 내부의 state 및 변수를 다른 컴포넌트에서 가져다 쓰는 것이 원칙적으로 불가하다.
+- **그럼 props 안 쓸 수 있나요?**
+	1. Context API (잘 사용되지 X)
+	2. **Redux**
+
+#### Context API
+- 성능 이슈 등의 문제가 있어 현업에서 잘 사용되지는 않지만, **리액트 기본문법** 이라서 외부 라이브러리가 필요없다는 장점이 있다.
+- Context API를 사용하면, 자식은 props로 받지 않아도 부모의 state를 사용가능하다.
+```jsx
+// App.js
+// 1. createContext() : Context(=state 보관함)를 만들어준다. 
+let Context1 = createContext()
+
+function App() {
+	let [stock] = useState(10);
+	let [products] = useState(array);
+	return (
+		...
+		// 2. Context로 원하는 컴포넌트 감싸기
+		<Context1.Provider value={{stock, products}}> // 3. value 내부에 전달을 원하는 state 보내기
+			// 4. Context로 감싸져 있는 모든 자식 컴포넌트는 value로 전달된 state들을 사용할 수 있다.
+			<Detail />
+		</Context1.Provider>
+	)
+}
+```
+```jsx
+// Detail.js
+// 1. 부모 컴포넌트에서 만든 Context를 임포트한다. (부모 컴포넌트에서 export는 필요하지 않다.)
+import { Context1 } from './경로/App.js'
+import { useContext } from 'react'
+
+function Detail() {
+	// 2. 임포트한 Context를 useContext의 인자로 받는다(useContext 역시 임포트한다)
+	// useContext는 받은 Context를 해체해 {state1, state2...} 형태의 객체 자료형을 리턴한다.
+	let {stock, products} = useContext(Context1) 
+
+	return (
+		...
+		// 3. props 없이 변수명으로 사용한다.
+		<div>상품: {products[0].title}</div>
+		<div>재고: {stock[0]}</div>
+	)
+}
+
+function Child() {
+	// 자식뿐 아니라 다른 자손 컴포넌트에서도 props 없이 사용가능하다는 것이 장점이다.
+	let {stock, products} = useContext(Context1)
+}
+```
+
+#### Context API 왜 잘 안쓰나요?
+1. **성능 이슈**
+	- `Context` 태그로 둘러싼 내부의 모든 자식(자손)컴포넌트들은, `Context` 태그의 value로 넘겨진 state가 업데이트될때마다 **전부 재렌더링된다.** 
+	- 문제는 그 state를 사용하지 않는 컴포넌트들도 무조건 재렌더링된다는 점
+	- 컴포넌트 중첩 구조가 깊어질수록 성능 이슈를 발생시킨다.
+2. **컴포넌트 재사용이 어렵다.**
+	- 만약 위 코드의 `Detail` 컴포넌트를 다른 페이지(파일)에서 재사용하려면?
+	- `Detail.js` 안에 있는 `Context1`이나 `stock`, `products` 는 다른 페이지로 넘겨지지 않기 때문에 문제가 생길 수 있다.

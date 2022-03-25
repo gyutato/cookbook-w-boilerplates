@@ -5,6 +5,24 @@
   src: url('../public/img/mainbg.jpg');
 }
 
+.start {
+  opacity: 0;
+}
+
+.end {
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+
+.tmpContent {
+  color: white;
+  width: 80%;
+  border-radius: 16px;
+  background-color: rgb(97, 97, 97);
+  margin: auto;
+  padding: 20px;
+}
+
 h6.red {
   color: red;
 }
