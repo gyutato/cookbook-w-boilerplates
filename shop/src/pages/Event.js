@@ -10,7 +10,6 @@ function Event() {
 			<h4 style={ {marginTop : 20} }>🎉 오늘의 이벤트 🎉</h4>
 			<ButtonGroup aria-label="Basic example" style={ {margin : 20} }>
 				<Button variant='secondary' onClick={() => {navigate('one')}}>이벤트 1 열기</Button>
-				<Button variant='secondary' onClick={() => {navigate('two')}}>이벤트 2 열기</Button>
 			</ButtonGroup>
 			<Routes>
 				<Route path="one" element={<p>첫 주문시 양배추즙 서비스</p>}/>

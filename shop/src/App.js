@@ -4,8 +4,11 @@ import data from './data.js'
 import { Container, Nav, Navbar, Row, Col, Button } from 'react-bootstrap'
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Detail from './pages/Detail.js'
+import Cart from './pages/Cart.js'
 import Event from './pages/Event.js'
 import axios from 'axios';
+
+/* eslint-disable */
 
 function App() {
 
@@ -69,8 +72,8 @@ function App() {
           </div>
         } />
         <Route path="/details/:id" element={ <Detail products={products} /> } />
-        <Route path='/events/*' element={ <Event /> } >
-        </Route>
+        <Route path='/events/*' element={ <Event /> } />
+        <Route path="/cart" element={ <Cart /> } />
       </Routes>
     </div>
   );

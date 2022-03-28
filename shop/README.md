@@ -669,3 +669,46 @@ function Child() {
 2. **컴포넌트 재사용이 어렵다.**
 	- 만약 위 코드의 `Detail` 컴포넌트를 다른 페이지(파일)에서 재사용하려면?
 	- `Detail.js` 안에 있는 `Context1`이나 `stock`, `products` 는 다른 페이지로 넘겨지지 않기 때문에 문제가 생길 수 있다.
+
+<br/>
+
+## 상태공유 (2) Redux
+
+#### 궁금증 : 하나의 state 가 여러 컴포넌트에서 필요하다면?
+
+- 예를 들어, 장바구니 state 를 만들어 `App`, `Detail`, `Cart` 에서 모두 사용해야 하는 상황
+	- **그 중 최상위 컴포넌트에 state를 만들고, 자식 컴포넌트에 `props` 로 흘려보내야 한다**
+- 이런 상황에서, <u>`Redux` 라이브러리</u>를 사용하면 컴포넌트들이 `props` 없이 state 를 공유할 수 있다!
+	- `Redux` 를 설치하면, JS 파일 하나에 모든 컴포넌트들의 state 를 합쳐서 보관할 수 있고, 모든 컴포넌트들이 그 안의 state 를 직접 꺼내쓸 수 있다.
+
+#### `Redux` 설치
+```bash
+npm install @reduxjs/toolkit react-redux
+```
+
+- 설치 후 프로젝트 메인 폴더( 여기서는 `src` )에 `store.js` 파일 만들기 (이름 자유)
+```js
+// store.js 초기 셋팅
+import { configureStore } from '@reduxjs/toolkit'
+
+export default configureStore({
+	reducer: {
+
+	}
+})
+```
+```js
+// index.js 에서 store 임포트하고 (default 이므로 중괄호 X, 이름 아무렇게나 가능)
+import store from './store';
+// Provider 도 임포트하고
+import { Provider } from 'react-redux';
+
+// <Provider> 태그로 감싸기
+<React.StrictMode>
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
+</React.StrictMode>
+```
