@@ -1,0 +1,2 @@
+- [리액트] 최신 문법 (함수형 컴포넌트, Hooks) 사용한 블로그 제작
+- [JS] CRUD 구현 to-do list 제작, 로컬 REST API 구축 및 연동(`json-server`)
